@@ -1,8 +1,6 @@
 import json
 
 
-
-
 def parse_json_file(filename):
     """Load the Toronto map JSON file and create its data objects."""
     with open(filename, 'r') as f:
@@ -70,14 +68,14 @@ class Poi:
 
     def __str__(self):
         """Return a readable description of the point of interest."""
-        return f"""POI: ID{self.id}, Name: {self.name}, Latitude: {self.lat}, 
+        return f"""POI: ID {self.id}, Name: {self.name}, Latitude: {self.lat}, 
                 Longitude: {self.lng}, Kind: {self.kind},
                 Node: {self.node}, Address: {self.address}"""
 
 
 class Edge:
     """Represent a connection between two nodes."""
-
+    
     def __init__(self, id, a, b, km, w, street, hwy: bool, terrain):
         """Initialize an edge with its nodes, distance, and road data."""
         self.id = id
@@ -92,7 +90,7 @@ class Edge:
 
     def __str__(self):
         """Return a readable description of the edge."""
-        return f"""Edge: ID{self.id}, Street: {self.street}, Highway: {self.hwy},
+        return f"""Edge: ID {self.id}, Street: {self.street}, Highway: {self.hwy},
             Node1: {self.node1}, Node2: {self.node2}, Distance: {self.km} km,
             Weight: {self.w}, Terrain: {self.terrain}"""
 
@@ -108,7 +106,7 @@ class Node:
 
     def __str__(self):
         """Return a readable description of the node."""
-        return f"""Node: ID{self.id}, Name: {self.name}, Latitude: {self.lat}, Longitude: {self.lng}"""
+        return f"""Node: ID {self.id}, Name: {self.name}, Latitude: {self.lat}, Longitude: {self.lng}"""
 
 class Truck:
     """Represent a delivery truck."""
@@ -124,7 +122,7 @@ class Truck:
 
     def __str__(self):
         """Return a readable description of the truck."""
-        return f"""Truck: ID{self.id}, Name: {self.name}, Home: {self.home}, Refrigerated: {self.refrigerated},
+        return f"""Truck: ID {self.id}, Name: {self.name}, Home: {self.home}, Refrigerated: {self.refrigerated},
             Capacity: {self.capacity}, Fuel: {self.fuel}"""
     
 class Hub:
@@ -138,5 +136,5 @@ class Hub:
 
     def __str__(self):
         """Return a readable description of the hub."""
-        return f"""Hub: POI ID{self.poiId}, Normal Capacity: {self.normal}, Cold Capacity: {self.cold}"""
+        return f"""Hub: POI ID {self.poiId}, Normal Capacity: {self.normal}, Cold Capacity: {self.cold}"""
 
