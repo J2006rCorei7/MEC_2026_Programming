@@ -1,8 +1,12 @@
 from flask import Flask, render_template, request, session
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 from flask_restful import Resource, Api, reqparse, fields, marshal_with, abort
 
+from dispatcher import closest_hub
+
 app = Flask(__name__, template_folder="frontEnd", static_folder="frontEnd")
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 db = SQLAlchemy(app)
 api = Api(app)
@@ -98,7 +102,21 @@ class Request(Resource):
         db.session.add(new_request)
         db.session.commit()
 
-        return {"message": "Request saved", "id": new_request.id}, 201
+        path, edges_used, total_km, hub = closest_hub(data['dest_name'])
+
+        path_json = [
+            {
+                "latitude": node.lat,
+                "longitude": node.lng
+            }
+            for node in path
+        ]
+
+        return {
+            "message": "Request saved",
+            "id": new_request.id,
+            "path": path_json,
+        }, 201
 
 class RequestByID(Resource):
     def get(self, request_id):

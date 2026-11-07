@@ -45,7 +45,13 @@
             <h3>Destination Information</h3>
 
             <label>Destination Name *</label>
-            <input type="text" name="destination" required>
+            <select name="destination" required>
+                <option value="">Select type</option>
+                <option value="community">Toronto General Hospital (approximate)</option>
+                <option value="shelter">Moss Park delivery site (scenario)</option>
+                <option value="hospital">Waterfront delivery site (scenario)</option>
+                <option value="hospital">Bloor community delivery (scenario)</option>
+            </select>
 
             <label>Destination Type *</label>
             <select name="type" required>
