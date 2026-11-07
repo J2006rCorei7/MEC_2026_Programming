@@ -53,11 +53,24 @@ class RequestModel(db.Model):
     person_id = db.Column(
         db.Integer,
         db.ForeignKey('person.id'),
-        nullable=False
+        nullable=True
     )
 
-    def __repr__(self):
-            return f'<request (name = {self.name}>, email = {self.email})>'
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "dest_name": self.dest_name,
+            "dest_type": self.dest_type,
+            "num_people": self.num_people,
+            "address": self.address,
+            "hot_food_needed": self.hot_food_needed,
+            "hot_food_available": self.hot_food_available,
+            "cold_food_needed": self.cold_food_needed,
+            "cold_food_available": self.cold_food_available,
+            "delivery_deadline": self.delivery_deadline,
+            "urgency_level": self.urgency_level,
+            "person_id": self.person_id
+        }
 
 request_args = reqparse.RequestParser()
 
@@ -87,8 +100,18 @@ class Request(Resource):
 
         return {"message": "Request saved", "id": new_request.id}, 201
 
+class RequestByID(Resource):
+    def get(self, request_id):
+        request = RequestModel.query.get(request_id)
+
+        if request is None:
+            return {"error": "Request not found"}, 404
+
+        return request.to_dict(), 200
+
 
 api.add_resource(Request, '/api/request/')
+api.add_resource(RequestByID, '/requests/<int:request_id>')
 
 if __name__ == '__main__':
     app.run(debug=True)
