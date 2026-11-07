@@ -92,6 +92,7 @@ def a_star(start, goal):
                 current_id = previous_id
             path.reverse()
             edges_used.reverse()
+            path = [nodes_by_id[node_id] for node_id in path]
             return path, edges_used, cost_so_far
 
         # Skip outdated entries: we already found a cheaper way to this node
@@ -119,19 +120,19 @@ def a_star(start, goal):
 
     return None, None, None  # open_list ran out, so the goal can't be reached
 
-# if __name__ == "__main__":
-#     path, edges_used, total_km = a_star(4, 28)   # Yonge & Front -> Yonge & Dundas
-#
-#     if path is None:
-#         print("No path found")
-#     else:
-#         print("Nodes:")
-#         for node_id in path:
-#             print(f"  {node_id}: {nodes_by_id[node_id].name}")
-#
-#         print("Edges:")
-#         for edge in edges_used:
-#             print(f"  Edge {edge.id}: {edge.street}, {edge.km} km "
-#                   f"({edge.node1} <-> {edge.node2})")
-#
-#         print(f"Total distance: {total_km:.2f} km")
+if __name__ == "__main__":
+    path, edges_used, total_km = a_star(4, 28)   # Yonge & Front -> Yonge & Dundas
+
+    if path is None:
+        print("No path found")
+    else:
+        print(path)
+        #for node_id in path:
+        #    print(f"  {node_id}: {nodes_by_id[node_id].name}")
+
+        print(edges_used)
+        #for edge in edges_used:
+        #    print(f"  Edge {edge.id}: {edge.street}, {edge.km} km "
+        #          f"({edge.node1} <-> {edge.node2})")
+
+        print(f"Total distance: {total_km:.2f} km")
