@@ -20,6 +20,10 @@ URGENCY_FACTOR = 1
 
 (g_id, g_name, g_zoom, g_center, nodes, pois, edges, trucks, hubs) = parse_json_file("toronto-downtown.json")
 
+nodes_by_id = {node.id: node for node in nodes}
+nodes_by_name = {node.name: node for node in nodes}
+pois_by_poiID = {poi.id: poi for poi in pois}
+
 def calculate_score(request):
     def time_diff(time1, time2):
         hour1 = time1.hour
@@ -40,8 +44,26 @@ def calculate_score(request):
 
     return priority_score
 
-def distance_to_closest_hub():
-    pass
+def closest_hub(name):
+    def hub_to_node_id(hub):
+        return pois_by_poiID[hub.poiId].node
+
+    closest_distance = float('inf')
+    closest_path = None
+    closest_edges = None
+    closest_hub = None
+    for hub in hubs:
+        path, edges, cost = a_star(nodes_by_name[name].id, hub_to_node_id(hub))
+        if cost < closest_distance:
+            closest_path = path
+            closest_edges = edges
+            closest_distance = cost
+            closest_hub = hub
+
+    if path != []:
+        return (closest_path, closest_edges, closest_distance, closest_hub)
+    else:
+        return None
 
 class Request:
     def __init__(self, dest_name, dest_type, num_people, address,
@@ -63,3 +85,19 @@ class Request:
                 self.hot_food_needed, self.hot_food_available,
                 self.cold_food_needed, self.cold_food_available,
                 self.delivery_deadline, self.urgency_level)
+
+if __name__ == '__main__':
+    path, edges_used, total_km, hub = closest_hub("Spadina Ave & Front St")
+    if path is None:
+        print("No path found")
+    else:
+        print(f"Hub: {nodes_by_id[pois_by_poiID[hub.poiId].node].name}")
+
+        for node in path:
+           print(f"Node {node.id}: {node.name}")
+
+        for edge in edges_used:
+           print(f"Edge {edge.id}: {edge.street}, {edge.km} km "
+                 f"({edge.node1} <-> {edge.node2})")
+
+        print(f"Total distance: {total_km:.2f} km")
