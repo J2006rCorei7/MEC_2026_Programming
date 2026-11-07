@@ -55,7 +55,7 @@ def closest_hub(name):
     closest_edges = None
     closest_hub = None
     for hub in hubs:
-        path, edges, cost = a_star(pois_by_name[name].id, hub_to_node_id(hub))
+        path, edges, cost = a_star(pois_by_name[name].node, hub_to_node_id(hub))
         if cost < closest_distance:
             closest_path = path
             closest_edges = edges
