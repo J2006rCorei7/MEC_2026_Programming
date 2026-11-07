@@ -21,7 +21,7 @@ URGENCY_FACTOR = 1
 (g_id, g_name, g_zoom, g_center, nodes, pois, edges, trucks, hubs) = parse_json_file()
 
 nodes_by_id = {node.id: node for node in nodes}
-nodes_by_name = {node.name: node for node in nodes}
+pois_by_name = {poi.name: poi for poi in pois}
 pois_by_poiID = {poi.id: poi for poi in pois}
 
 def calculate_score(request):
@@ -55,7 +55,7 @@ def closest_hub(name):
     closest_edges = None
     closest_hub = None
     for hub in hubs:
-        path, edges, cost = a_star(nodes_by_name[name].id, hub_to_node_id(hub))
+        path, edges, cost = a_star(pois_by_name[name].id, hub_to_node_id(hub))
         if cost < closest_distance:
             closest_path = path
             closest_edges = edges
