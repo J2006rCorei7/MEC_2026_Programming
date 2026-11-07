@@ -45,6 +45,8 @@ def calculate_score(request):
     return priority_score
 
 def closest_hub(name):
+    global path
+
     def hub_to_node_id(hub):
         return pois_by_poiID[hub.poiId].node
 
@@ -60,8 +62,8 @@ def closest_hub(name):
             closest_distance = cost
             closest_hub = hub
 
-    if path != []:
-        return (closest_path, closest_edges, closest_distance, closest_hub)
+    if path:
+        return closest_path, closest_edges, closest_distance, closest_hub
     else:
         return None
 
