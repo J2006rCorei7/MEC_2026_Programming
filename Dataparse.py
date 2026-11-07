@@ -1,10 +1,19 @@
 import json
+from pathlib import Path
 
+folder = Path(__file__).parent / "dataset"
 
-def parse_json_file(filename):
-    """Load the any JSON file and create its data objects."""
-    with open(filename, 'r') as f:
-        data = json.load(f)
+def parse_json_file():
+    try:
+        json_file = next(folder.glob("*.json"))
+
+        with open(json_file, "r", encoding="utf-8") as file:
+            data = json.load(file)
+
+    except StopIteration:
+        print(f"Could not find any JSON files inside the folder: {folder}")
+    except FileNotFoundError:
+        print(f"The subfolder '{folder.name}' does not exist next to this script.")
 
     # Defined variables 
     g_zoom = 0

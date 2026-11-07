@@ -3,7 +3,7 @@ import math
 
 from Dataparse import parse_json_file
 
-(g_id, g_name, g_zoom, g_center, nodes, pois, edges, trucks, hubs) = parse_json_file("toronto-downtown.json")
+(g_id, g_name, g_zoom, g_center, nodes, pois, edges, trucks, hubs) = parse_json_file()
 
 # Create a list of node objects, addressable by node ID
 nodes_by_id = {}
@@ -126,13 +126,13 @@ if __name__ == "__main__":
     if path is None:
         print("No path found")
     else:
-        print(path)
-        #for node_id in path:
-        #    print(f"  {node_id}: {nodes_by_id[node_id].name}")
+        print("Nodes:")
+        for node in path:
+           print(f"Node {node.id}: {node.name}")
 
-        print(edges_used)
-        #for edge in edges_used:
-        #    print(f"  Edge {edge.id}: {edge.street}, {edge.km} km "
-        #          f"({edge.node1} <-> {edge.node2})")
+        print("Edges:")
+        for edge in edges_used:
+           print(f"Edge {edge.id}: {edge.street}, {edge.km} km "
+                 f"({edge.node1} <-> {edge.node2})")
 
-        print(f"Total distance: {total_km:.2f} km")
+        print(f"\nTotal distance: {total_km:.2f} km")
