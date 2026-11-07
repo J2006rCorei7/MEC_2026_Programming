@@ -1,11 +1,15 @@
 from flask import Flask, render_template
 
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="frontEnd")
 
-@app.route('/')
+@app.route('/user')
 def home():
-    return render_template("frontEnd/frontEndUser.html")
+    return render_template("frontEndUser.html")
+
+@app.route('/management')
+def home():
+    return render_template("frontEndUser.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
