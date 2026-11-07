@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="script.js"></script>
+    <link rel="Stylesheet" type="text/css" href="styles.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+</head>
+<body>
+<header style="display: flex; align-items: center; justify-content: space-between; flex-wrap: nowrap;">
+    <h1>MEC 2026</h1>
+</header>
+
+<div id="map" class="box">
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="mapScript.js"></script>
+
+</div>
+<div class="box" style="height: 100px; width: 100%;">
+    <button id="request" onclick="ShowForm()">Request</button>
+</div>
+
+<label class="clickableText" style="align-text: left;">
+    Sign in
+</label>
+
+
+<div id="foodModal" class="modal-overlay">
+
+    <div class="modal-content">
+
+        <button class="close-modal" id="closeFoodForm" onclick="hideForm()">
+            &times;
+        </button>
+
+        <h2>Emergency Food Request</h2>
+        <p>Enter the destination's food requirements.</p>
+
+        <form id="foodRequestForm">
+
+            <h3>Destination Information</h3>
+
+            <label>Destination Name *</label>
+            <input type="text" name="destination" required>
+
+            <label>Destination Type *</label>
+            <select name="type" required>
+                <option value="">Select type</option>
+                <option value="community">Community</option>
+                <option value="shelter">Shelter</option>
+                <option value="hospital">Hospital</option>
+            </select>
+
+            <label>Number of People</label>
+            <input type="number" name="people" min="0">
+
+            <label>Address</label>
+            <input type="text" name="address">
+
+            <h3>Food Requirements</h3>
+            <div class="food-section">
+                <h4>Hot Food</h4>
+                <label>Amount Needed</label>
+                <input type="number" name="hotNeeded" min="0">
+
+                <label>Amount Remaining</label>
+                <input type="number" name="hotRemaining" min="0">
+            </div>
+
+            <div class="food-section">
+                <h4>Cold Food</h4>
+                <label>Amount Needed</label>
+                <input type="number" name="coldNeeded" min="0">
+
+                <label>Amount Remaining</label>
+                <input type="number" name="coldRemaining" min="0">
+            </div>
+
+            <h3>Urgency</h3>
+
+            <label>Delivery Deadline</label>
+            <input type="number" name="hours" min="0">
+
+            <label>Urgency Level</label>
+            <select name="urgency">
+                <option value="">Unknown</option>
+                <option value="critical">Critical</option>
+                <option value="high">High</option>
+                <option value="moderate">Moderate</option>
+                <option value="low">Low</option>
+            </select>
+
+            <label>Additional Information</label>
+            <textarea name="notes" rows="4"></textarea>
+
+            <button type="submit" class="submit-button">
+                Submit Request
+            </button>
+
+        </form>
+    </div>
+</div>
+
+
+
+</body>
+<meta charset="UTF-8">
+</html>
