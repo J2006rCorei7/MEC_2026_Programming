@@ -2,7 +2,7 @@ import json
 
 
 def parse_json_file(filename):
-    """Load the Toronto map JSON file and create its data objects."""
+    """Load the any JSON file and create its data objects."""
     with open(filename, 'r') as f:
         data = json.load(f)
 
