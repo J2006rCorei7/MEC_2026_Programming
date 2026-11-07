@@ -10,8 +10,6 @@ def parse_json_file():
         with open(json_file, "r", encoding="utf-8") as file:
             data = json.load(file)
 
-        print(data)
-
     except StopIteration:
         print(f"Could not find any JSON files inside the folder: {folder}")
     except FileNotFoundError:

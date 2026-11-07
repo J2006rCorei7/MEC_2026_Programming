@@ -95,9 +95,11 @@ if __name__ == '__main__':
     else:
         print(f"Hub: {nodes_by_id[pois_by_poiID[hub.poiId].node].name}")
 
+        print("Nodes:")
         for node in path:
            print(f"Node {node.id}: {node.name}")
 
+        print("Edges:")
         for edge in edges_used:
            print(f"Edge {edge.id}: {edge.street}, {edge.km} km "
                  f"({edge.node1} <-> {edge.node2})")
