@@ -3,7 +3,7 @@ import math
 
 from Dataparse import parse_json_file
 
-(g_id, g_name, g_zoom, g_center, nodes, pois, edges, trucks, hubs) = parse_json_file("toronto-downtown.json")
+(g_id, g_name, g_zoom, g_center, nodes, pois, edges, trucks, hubs) = parse_json_file()
 
 # Create a list of node objects, addressable by node ID
 nodes_by_id = {}

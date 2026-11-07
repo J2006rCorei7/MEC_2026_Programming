@@ -18,7 +18,7 @@ DEADLINE_FACTOR = -0.5
 
 URGENCY_FACTOR = 1
 
-(g_id, g_name, g_zoom, g_center, nodes, pois, edges, trucks, hubs) = parse_json_file("toronto-downtown.json")
+(g_id, g_name, g_zoom, g_center, nodes, pois, edges, trucks, hubs) = parse_json_file()
 
 nodes_by_id = {node.id: node for node in nodes}
 nodes_by_name = {node.name: node for node in nodes}
