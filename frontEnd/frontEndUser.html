@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="script.js"></script>
-    <link rel="Stylesheet" type="text/css" href="styles.css" />
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
 </head>
 <body>
@@ -10,11 +10,16 @@
     <h1>MEC 2026</h1>
 </header>
 
+
+
 <div id="map" class="box">
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="mapScript.js"></script>
-
+    <script src="{{ url_for('static', filename='mapScript.js') }}"></script>
 </div>
+
+
+
+
 <div class="box" style="height: 100px; width: 100%;">
     <button id="request" onclick="ShowForm()">Request</button>
 </div>
