@@ -1,12 +1,40 @@
 :root {
     --textColor: #000000;
-    --backgroundColor: #333;
+    --backgroundColor: #F3F9D2;
     --boxMargin: 10px;
 }
 
 body{
     background-color: var(--backgroundColor);
     z-index: 0;
+    margin: 0;
+    padding: 0 24px 24px; 
+}
+
+.site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    margin: 12px 0;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px #00000024;
+}
+
+
+.site-header h1 {
+    margin: 0;
+}
+
+.sign-in-link {
+    color: #000000;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.sign-in-link:hover {
+    text-decoration: underline;
 }
 
 .box{
@@ -23,18 +51,30 @@ body{
 #map {
     height: 500px;
     width: 100%;
+    margin: 12px 0 20px;
 }
 
 #request{
     height: 100%;
     width: 100%;
-    background-color: red;
+    background-color: #93BEDF;
     z-index: 0;
     font-size: 50px;
     font-weight: bold;
     border-radius: 10px;
 }
 
+.request-section {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+#request {
+    width: min(420px, 100%);
+    height: 64px;
+    font-size: 24px;
+}
 #request:hover{
     cursor: pointer;
 }

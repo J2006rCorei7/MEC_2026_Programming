@@ -7,11 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-<header style="display: flex; align-items: center; justify-content: space-between; flex-wrap: nowrap;">
+<header class="site-header">
     <h1>MEC 2026</h1>
+    <a class="sign-in-link" href="/management">Sign in</a>
 </header>
 
-
+ 
 
 <div id="map" class="box">
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -21,13 +22,11 @@
 
 
 
-<div class="box" style="height: 100px; width: 100%;">
+<div class="request-section">
     <button id="request" onclick="ShowForm()">Request</button>
 </div>
 
-<label class="clickableText" style="align-text: left;">
-    Sign in
-</label>
+
 
 
 <div id="foodModal" class="modal-overlay">
