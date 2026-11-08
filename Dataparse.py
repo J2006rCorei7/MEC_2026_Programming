@@ -64,7 +64,7 @@ def parse_json_file():
 class Poi:
     """Represent a point of interest on the map."""
 
-    def __init__(self, id, name, kind, node, lat, lng, address):
+    def __init__(self, id, name, kind, node, lat, lng, address, aval=True):
         """Initialize a point of interest with its map and address data."""
         self.id = id
         self.name = name
@@ -73,19 +73,21 @@ class Poi:
         self.lat = lat
         self.lng = lng
         self.address = address
+        self.aval = aval
 
 
     def __str__(self):
         """Return a readable description of the point of interest."""
         return f"""POI: ID {self.id}, Name: {self.name}, Latitude: {self.lat}, 
                 Longitude: {self.lng}, Kind: {self.kind},
-                Node: {self.node}, Address: {self.address}"""
+                Node: {self.node}, Address: {self.address}, Available: {self.aval}"""
+
 
 
 class Edge:
     """Represent a connection between two nodes."""
     
-    def __init__(self, id, a, b, km, w, street, hwy: bool, terrain):
+    def __init__(self, id, a, b, km, w, street, hwy: bool, terrain, aval=True):
         """Initialize an edge with its nodes, distance, and road data."""
         self.id = id
         self.node1 = a
@@ -94,14 +96,15 @@ class Edge:
         self.w = w
         self.street = street
         self.hwy = hwy
-        self.terrain = terrain        
+        self.terrain = terrain
+        self.aval = aval
 
 
     def __str__(self):
         """Return a readable description of the edge."""
         return f"""Edge: ID {self.id}, Street: {self.street}, Highway: {self.hwy},
             Node1: {self.node1}, Node2: {self.node2}, Distance: {self.km} km,
-            Weight: {self.w}, Terrain: {self.terrain}"""
+            Weight: {self.w}, Terrain: {self.terrain}, Available: {self.aval}"""
 
 class Node:
     """Represent a location node on the map."""
