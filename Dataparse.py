@@ -132,6 +132,15 @@ class Truck:
         self.capacity = capacity
         self.fuel = fuel
 
+    def drive(self, distance):
+        """Simulate driving the truck a certain distance, reducing its fuel. 
+        Assuming the truck is a Ford F150, which has an average fuel efficiency of 20 miles per gallon (mpg) 
+        or approximately 8 kilometers per liter (km/L)."""
+        if distance > self.fuel:
+            raise ValueError("Not enough fuel to drive the specified distance.")
+        self.fuel -= (distance / 8)
+
+
     def __str__(self):
         """Return a readable description of the truck."""
         return f"""Truck: ID {self.id}, Name: {self.name}, Home: {self.home}, Refrigerated: {self.refrigerated},
