@@ -1,1 +1,0 @@
-# MEC_2026_Programming

@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_restful import Resource, Api, reqparse, fields, marshal_with, abort
 
-from dispatcher import closest_hub
+from dispatcher import closest_hub, g_name, g_center, g_zoom
 
 app = Flask(__name__, template_folder="frontEnd", static_folder="frontEnd")
 
@@ -12,7 +12,11 @@ db = SQLAlchemy(app)
 api = Api(app)
 @app.route("/")
 def requestIndex():
-    return render_template("frontEndUser.html")
+    return render_template(
+        "frontEndUser.html",
+        service_area_name=g_name,
+        map_config={"center": g_center, "zoom": g_zoom},
+    )
 
 @app.route("/management")
 def managementIndex():

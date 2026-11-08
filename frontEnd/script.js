@@ -1,7 +1,6 @@
 function ShowForm(){
     let form = document.getElementById("foodModal");
     if(!form.classList.contains("active")){
-        form.addEventListener(escape, hideForm)
         form.classList.add("active");
     }
 }
@@ -12,6 +11,19 @@ function hideForm(){
         document.getElementById("foodModal").classList.remove("active");
     }
 }
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") {
+        hideForm();
+    }
+});
+
+document.addEventListener("click", function(event) {
+    const modal = document.getElementById("foodModal");
+    if (event.target === modal) {
+        hideForm();
+    }
+});
 
 
 async function submit_form(event) {
