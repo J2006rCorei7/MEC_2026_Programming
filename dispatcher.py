@@ -253,6 +253,30 @@ def calculate_priority_score(request):
 
     return round(score, 2)
 
+def recalculatePriorities():
+    requests = get_all_requests()
+
+    highest = float('-inf')
+    highest_id = None
+
+    for r in requests:
+        score = calculate_priority_score(r)
+
+        if score > highest:
+            highest = score
+            highest_id = r['id']
+
+    if highest_id is None:
+        return None
+
+    for r in requests:
+        if r['status'] == 2 and r['id'] != highest_id:
+            update_request(r['id'], {"status": 1})
+
+    update_request(highest_id, {"status": 2})
+
+    return highest_id
+
 
 # Test Case
 if __name__ == '__main__':
