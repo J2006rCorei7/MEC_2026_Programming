@@ -52,7 +52,7 @@ async function submit_form(event) {
     };
 
     try {
-        const response = await fetch("http://127.0.0.1:5000/api/request/", {
+        const response = await fetch("/api/request/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
