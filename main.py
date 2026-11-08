@@ -25,10 +25,7 @@ def requestIndex():
         "zoom": 13
     }
 
-    return render_template(
-        "frontEndUser.html",
-        map_config=map_config
-    )
+    return render_template("frontEndUser.html",map_config=map_config)
 
 @app.route("/management")
 def managementIndex():
@@ -37,10 +34,7 @@ def managementIndex():
         "zoom": 13
     }
 
-    return render_template(
-        "frontEndManagement.html",
-        map_config=map_config
-    )
+    return render_template("frontEndManagement.html",map_config=map_config)
 
 requestFields = {
     'dest_name': fields.String,

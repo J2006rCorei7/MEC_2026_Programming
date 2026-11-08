@@ -61,8 +61,10 @@ async function submit_form(event) {
         })
             .then(response => response.json())
             .then(data => {
-                highlightRoads(data.path);
                 hideForm();
+                window.location.reload();
+                highlightRoads(data.path);
+
             });
     }catch (e){
         console.log(e);
