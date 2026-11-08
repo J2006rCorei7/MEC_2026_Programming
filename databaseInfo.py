@@ -53,6 +53,7 @@ def delete_request(request_id):
 
     return True
 
-print(get_all_requests())
-update_request(1, {"urgency_level": "moderate", "hot_food_available": 10, "num_people": 15})
-print(get_all_requests())
+if __name__ == '__main__':
+    print(get_all_requests())
+    update_request(1, {"urgency_level": "moderate", "hot_food_available": 10, "num_people": 15})
+    print(get_all_requests())

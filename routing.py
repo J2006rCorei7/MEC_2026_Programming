@@ -1,30 +1,41 @@
 import heapq
 import math
 
-from Dataparse import parse_json_file
-
-(g_id, g_name, g_zoom, g_center, nodes, pois, edges, trucks, hubs) = parse_json_file()
-
-# Create a list of node objects, addressable by node ID
 nodes_by_id = {}
-for node in nodes:
-    nodes_by_id[node.id] = node
-
-# Neighbours is a list of a list of neighbours
+pois_by_name = {}
+pois_by_poiID = {}
 neighbours = {}
+hubs = []
 
-# Create an index for each node
-for node in nodes:
-    neighbours[node.id] = []
+def init(node_list, edge_list, poi_list, hub_list):
+    """Build the lookups that a_star and closest_hub need.
+    Call this once, after parse_json_file(), before using a_star or closest_hub."""
+    global nodes_by_id, pois_by_name, pois_by_poiID, neighbours, hubs
 
-# Go through the entire list of edges,
-# and for each edge, set node1 and node2 as neighbours
-# and append to list of neighbours
-for edge in edges:
-    # edge.node1 returns the Node ID of the first node in the edge
-    # edge.node2 returns the Node ID of the second node in the edge
-    neighbours[edge.node1].append((edge.node2, edge.km, edge))
-    neighbours[edge.node2].append((edge.node1, edge.km, edge))  # roads go both ways
+    # Create a dictionary of node objects, addressable by node ID
+    nodes_by_id = {node.id: node for node in node_list}
+
+    pois_by_name = {poi.name: poi for poi in poi_list}
+    pois_by_poiID = {poi.id: poi for poi in poi_list}
+
+    hubs = hub_list
+
+    # Neighbours maps each node ID to a list of its neighbours
+    neighbours = {node.id: [] for node in node_list}
+
+    # Go through the entire list of edges,
+    # and for each edge, set node1 and node2 as neighbours
+    # and append to list of neighbours
+    for edge in edge_list:
+        # edge.node1 returns the Node ID of the first node in the edge
+        # edge.node2 returns the Node ID of the second node in the edge
+        neighbours[edge.node1].append((edge.node2, edge.km, edge))
+        neighbours[edge.node2].append((edge.node1, edge.km, edge))  # roads go both ways
+
+# Closed Roads
+closed_edges = []
+
+
 
 def heuristic(node_a, node_b):
     """Straight-line distance in km between two Node objects (haversine)."""
@@ -40,7 +51,6 @@ def heuristic(node_a, node_b):
                        * math.sin(lng_difference / 2) ** 2)
 
     return 2 * earth_radius_km * math.asin(math.sqrt(haversine_value))
-
 
 def a_star(start, goal):
     """A* search between two node ids.
@@ -102,6 +112,8 @@ def a_star(start, goal):
         # Look at every road leaving this node
         # Grab all the data from neighbours
         for neighbour_id, edge_km, edge in neighbours[current_id]:
+            if edge.id in closed_edges:
+                continue
             new_cost = cost_so_far + edge_km
 
             # If a cost for a neighbour exists, save it in known_cost
@@ -120,7 +132,36 @@ def a_star(start, goal):
 
     return None, None, None  # open_list ran out, so the goal can't be reached
 
+def closest_hub(name):
+    global path
+
+    def hub_to_node_id(hub):
+        return pois_by_poiID[hub.poiId].node
+
+    closest_distance = float('inf')
+    closest_path = None
+    closest_edges = None
+    closest_hub = None
+    for hub in hubs:
+        path, edges, cost = a_star(pois_by_name[name].node, hub_to_node_id(hub))
+        if cost < closest_distance:
+            closest_path = path
+            closest_edges = edges
+            closest_distance = cost
+            closest_hub = hub
+
+    if path:
+        return closest_path, closest_edges, closest_distance, closest_hub
+    else:
+        return None
+
+# Test Case
 if __name__ == "__main__":
+    from Dataparse import parse_json_file
+
+    (_, _, _, _, test_nodes, test_pois, test_edges, _, test_hubs) = parse_json_file()
+    init(test_nodes, test_edges, test_pois, test_hubs)
+
     path, edges_used, total_km = a_star(4, 28)   # Yonge & Front -> Yonge & Dundas
 
     if path is None:

@@ -3,8 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_restful import Resource, Api, reqparse, fields, marshal_with, abort
 
-from dispatcher import closest_hub
+from routing import closest_hub, init as init_routing
+from Dataparse import parse_json_file
 
+(g_id, g_name, g_zoom, g_center, nodes, pois, edges, trucks, hubs) = parse_json_file()
+
+# Hand routing the map data
+init_routing(nodes, edges, pois, hubs)
 app = Flask(__name__, template_folder="frontEnd", static_folder="frontEnd")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'

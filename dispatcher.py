@@ -2,8 +2,11 @@
 Each request gets a score that determines its priority in the queue.
 Requests get processed based on their position in the queue.
 """
+import heapq
+from itertools import count
 from Dataparse import parse_json_file
-from routing import a_star
+from routing import a_star, closest_hub
+from databaseInfo import *
 from datetime import datetime
 
 # PRIORITY FACTORS
@@ -18,90 +21,53 @@ DEADLINE_FACTOR = -0.5
 
 URGENCY_FACTOR = 1
 
+DISTANCE_FACTOR = 0.5
+
+HOSPITAL_FACTOR = 1.7
+SHELTER_FACTOR = 1.5
+COMMUNITY_FACTOR = 1.1
+
 (g_id, g_name, g_zoom, g_center, nodes, pois, edges, trucks, hubs) = parse_json_file()
 
 nodes_by_id = {node.id: node for node in nodes}
 pois_by_name = {poi.name: poi for poi in pois}
 pois_by_poiID = {poi.id: poi for poi in pois}
 
-def calculate_score(request):
-    def time_diff(time1, time2):
-        hour1 = time1.hour
-        minute1 = time1.minute
-        second1 = time1.second
+request_queue = []
 
-        hour2 = time2.hour
-        minute2 = time2.minute
-        second2 = time2.second
+tie_breaker = count()
+def handle_requests():
+    requests = get_all_requests()
 
-        return (hour1 - hour2)*60*60 + (minute1 - minute2)*60 + (second1 - second2)
+    # Populating Priority Queue should be somewhere else
+    for r in requests:
+        request = get_request_by_id(r['id'])
+        if request is not None:
+            # request_queue.append(request['id'], -calculate_priority_score(request))
+            heapq.heappush(request_queue, (-calculate_priority_score(request), next(tie_breaker), request['id']))
 
-    dest_name, dest_type, num_people, address, hot_food_needed, hot_food_available, cold_food_needed, cold_food_available, delivery_deadline, urgency_level = request.get_data()
+def handle_request(request):
+    pass
 
-    priority_score = (PEOPLE_FACTOR*(PEOPLE_BASE**num_people) + (hot_food_needed - hot_food_available)*HOT_FOOD_FACTOR
-                      + (cold_food_needed - cold_food_available)*COLD_FOOD_FACTOR + DEADLINE_FACTOR*(DEADLINE_BASE**time_diff(delivery_deadline, datetime.now()))
-                      + urgency_level*URGENCY_FACTOR)
+def calculate_priority_score(request):
+    score = 0
+    score += PEOPLE_FACTOR * (PEOPLE_BASE ** request['num_people'])
+    score += HOT_FOOD_FACTOR * (request['hot_food_needed'] - request['hot_food_available'])
+    score += COLD_FOOD_FACTOR * (request['cold_food_needed'] - request['cold_food_available'])
+    score += URGENCY_FACTOR * (request['urgency_level'])
+    score += DISTANCE_FACTOR * (closest_hub(request['dest_name'])[2])
 
-    return priority_score
+    match request['dest_type']:
+        case 'hospital':
+            score *= HOSPITAL_FACTOR
+        case 'shelter':
+            score *= SHELTER_FACTOR
+        case 'community':
+            score *= COMMUNITY_FACTOR
 
-def closest_hub(name):
-    global path
+    return round(score, 2)
 
-    def hub_to_node_id(hub):
-        return pois_by_poiID[hub.poiId].node
-
-    closest_distance = float('inf')
-    closest_path = None
-    closest_edges = None
-    closest_hub = None
-    for hub in hubs:
-        path, edges, cost = a_star(pois_by_name[name].node, hub_to_node_id(hub))
-        if cost < closest_distance:
-            closest_path = path
-            closest_edges = edges
-            closest_distance = cost
-            closest_hub = hub
-
-    if path:
-        return closest_path, closest_edges, closest_distance, closest_hub
-    else:
-        return None
-
-class Request:
-    def __init__(self, dest_name, dest_type, num_people, address,
-                 hot_food_needed, hot_food_available, cold_food_needed, cold_food_available,
-                 delivery_deadline, urgency_level):
-        self.dest_name = dest_name
-        self.dest_type = dest_type
-        self.num_people = num_people
-        self.address = address
-        self.hot_food_needed = hot_food_needed
-        self.hot_food_available = hot_food_available
-        self.cold_food_needed = cold_food_needed
-        self.cold_food_available = cold_food_available
-        self.delivery_deadline = delivery_deadline
-        self.urgency_level = urgency_level
-
-    def get_data(self):
-        return (self.dest_name, self.dest_type, self.num_people, self.address,
-                self.hot_food_needed, self.hot_food_available,
-                self.cold_food_needed, self.cold_food_available,
-                self.delivery_deadline, self.urgency_level)
-
+# Test Case
 if __name__ == '__main__':
-    path, edges_used, total_km, hub = closest_hub("Spadina Ave & Front St")
-    if path is None:
-        print("No path found")
-    else:
-        print(f"Hub: {nodes_by_id[pois_by_poiID[hub.poiId].node].name}")
-
-        print("Nodes:")
-        for node in path:
-           print(f"Node {node.id}: {node.name}")
-
-        print("Edges:")
-        for edge in edges_used:
-           print(f"Edge {edge.id}: {edge.street}, {edge.km} km "
-                 f"({edge.node1} <-> {edge.node2})")
-
-        print(f"Total distance: {total_km:.2f} km")
+    request = [{'id': 1, 'dest_name': 'Moss Park delivery site (scenario)', 'dest_type': 'shelter', 'num_people': 150, 'address': '123 Queen Street West, Toronto, ON', 'hot_food_needed': 120, 'hot_food_available': 30, 'cold_food_needed': 80, 'cold_food_available': 50, 'delivery_deadline': 3, 'urgency_level': 4, 'person_id': None}]
+    print(f"Priority Score: {calculate_priority_score(request[0])}")
