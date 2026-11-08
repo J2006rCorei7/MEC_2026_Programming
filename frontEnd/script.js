@@ -74,7 +74,7 @@ async function submit_form(event) {
 
 async function loadRequests() {
     try {
-        const response = await fetch("/api/request");
+        const response = await fetch("/api/request/");
 
         if (!response.ok) {
             throw new Error("Failed to retrieve requests");
