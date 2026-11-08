@@ -5,7 +5,7 @@ from flask_restful import Resource, Api, reqparse, fields, marshal_with, abort
 from sqlalchemy import JSON
 
 import databaseInfo
-import dispatcher
+
 from routing import closest_hub, init as init_routing
 from Dataparse import parse_json_file
 
@@ -14,6 +14,8 @@ from Dataparse import parse_json_file
 # Hand routing the map data
 init_routing(nodes, edges, pois, hubs)
 app = Flask(__name__, template_folder="frontEnd", static_folder="frontEnd")
+import dispatcher
+
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 db = SQLAlchemy(app)
