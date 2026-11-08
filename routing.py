@@ -35,8 +35,6 @@ def init(node_list, edge_list, poi_list, hub_list):
 # Closed Roads
 closed_edges = []
 
-
-
 def heuristic(node_a, node_b):
     """Straight-line distance in km between two Node objects (haversine)."""
     earth_radius_km = 6371
