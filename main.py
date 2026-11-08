@@ -5,6 +5,7 @@ from flask_restful import Resource, Api, reqparse, fields, marshal_with, abort
 from sqlalchemy import JSON
 
 import databaseInfo
+import dispatcher
 from routing import closest_hub, init as init_routing
 from Dataparse import parse_json_file
 
@@ -52,6 +53,7 @@ requestFields = {
     'cold_food_available': fields.Integer,
     'delivery_deadline': fields.Integer,
     'urgency_level': fields.Integer,
+    'status': fields.Integer,
 }
 
 
@@ -68,8 +70,9 @@ class RequestModel(db.Model):
     cold_food_needed = db.Column(db.Integer)
     cold_food_available = db.Column(db.Integer)
     delivery_deadline = db.Column(db.Integer)
-    urgency_level = db.Column(db.String(20))
+    urgency_level = db.Column(db.Integer)
     path = db.Column(JSON, nullable=False)
+    status = db.Column(db.Integer)
 
     def to_dict(self):
         return {
@@ -85,6 +88,7 @@ class RequestModel(db.Model):
             "delivery_deadline": self.delivery_deadline,
             "urgency_level": self.urgency_level,
             "path": self.path,
+            "status": self.status,
         }
 
 request_args = reqparse.RequestParser()
@@ -116,11 +120,14 @@ class Request(Resource):
             cold_food_available=data.get('cold_food_available'),
             delivery_deadline=data.get('delivery_deadline'),
             urgency_level=data.get('urgency_level'),
-            path = path_json
+            path = path_json,
+            status = 1
         )
 
         db.session.add(new_request)
         db.session.commit()
+
+        dispatcher.recalculatePriorities()
 
         return {
             "message": "Request saved",

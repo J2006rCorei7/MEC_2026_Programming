@@ -44,7 +44,9 @@ def update_request(request_id, updates):
             "cold_food_needed",
             "cold_food_available",
             "delivery_deadline",
-            "urgency_level"
+            "urgency_level",
+            "status",
+            "path"
         ]
 
         for field, value in updates.items():

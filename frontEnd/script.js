@@ -48,7 +48,7 @@ async function submit_form(event) {
         cold_food_available: Number(formData.get("coldRemaining")) || 0,
 
         delivery_deadline: Number(formData.get("hours")) || 0,
-        urgency_level: formData.get("urgency")
+        urgency_level: parseInt(formData.get("urgency"), 10)
     };
 
     try {
@@ -86,6 +86,7 @@ async function loadRequests() {
 
         data.forEach(request => {
             const row = document.createElement("tr");
+            let status = status_to_string(request.status)
 
             row.innerHTML = `
                 <td>${request.id}</td>
@@ -93,14 +94,36 @@ async function loadRequests() {
                 <td>${request.dest_type}</td>
                 <td>${request.num_people}</td>
                 <td>${request.address}</td>
+                <td>${request.cold_food_needed}</td>
                 <td>${request.hot_food_needed}</td>
+                <td>${status}</td>
             `;
 
+            row.addEventListener("click", () => {
+                loadRequestByID(request.id);
+            });
             tableBody.appendChild(row);
         });
 
     } catch (error) {
         console.error("Error loading requests:", error);
+    }
+}
+
+function status_to_string(status) {
+    switch (status) {
+        case 1:
+            return "Ordered";
+        case 2:
+            return "Prioritized";
+        case 3:
+            return "In Progress";
+        case 4:
+            return "Delivered";
+        case 5:
+            return "Delayed";
+        default:
+            return "Unknown Status";
     }
 }
 

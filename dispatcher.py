@@ -67,6 +67,25 @@ def calculate_priority_score(request):
 
     return round(score, 2)
 
+def recalculatePriorities():
+    requests = get_all_requests()
+
+    highest = float('-inf')
+    highest_id = None
+
+    for r in requests:
+        score = calculate_priority_score(r)
+
+        if score > highest:
+            highest = score
+            highest_id = r['id']
+
+    if highest_id is not None:
+        update_request(highest_id, {"status": 2})
+
+    return highest_id
+
+
 # Test Case
 if __name__ == '__main__':
     request = [{'id': 1, 'dest_name': 'Moss Park delivery site (scenario)', 'dest_type': 'shelter', 'num_people': 150, 'address': '123 Queen Street West, Toronto, ON', 'hot_food_needed': 120, 'hot_food_available': 30, 'cold_food_needed': 80, 'cold_food_available': 50, 'delivery_deadline': 3, 'urgency_level': 4, 'person_id': None}]
