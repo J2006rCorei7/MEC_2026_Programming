@@ -1,4 +1,15 @@
-from main import app, db, RequestModel, Person
+app = None
+db = None
+RequestModel = None
+
+
+def set_model(app_instance, db_instance, model):
+    global app, db, RequestModel
+
+    app = app_instance
+    db = db_instance
+    RequestModel = model
+
 
 def get_all_requests():
     with app.app_context():
@@ -14,6 +25,7 @@ def get_request_by_id(request_id):
             return None
 
         return request.to_dict()
+
 
 def update_request(request_id, updates):
     with app.app_context():
@@ -42,18 +54,15 @@ def update_request(request_id, updates):
         db.session.commit()
         return True
 
+
 def delete_request(request_id):
-    request = db.session.get(RequestModel, request_id)
+    with app.app_context():
+        request = db.session.get(RequestModel, request_id)
 
-    if request is None:
-        return False
+        if request is None:
+            return False
 
-    db.session.delete(request)
-    db.session.commit()
+        db.session.delete(request)
+        db.session.commit()
 
-    return True
-
-if __name__ == '__main__':
-    print(get_all_requests())
-    update_request(1, {"urgency_level": "moderate", "hot_food_available": 10, "num_people": 15})
-    print(get_all_requests())
+        return True

@@ -1,22 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="index.js"></script>
-    <link rel="Stylesheet" type="text/css" href="styles.css" />
     <meta charset="UTF-8">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f7f2">
+    <title>MEC 2026 | Food Response</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <script defer src="{{ url_for('static', filename='script.js') }}"></script>
 </head>
 <body>
-<header class="header">
-    <h2>Hello</h2>
-</header>
+    <div class="page-shell">
+        <header class="site-header">
+            <a class="brand" href="/" aria-label="MEC 2026 home">
+                <span class="brand-mark" aria-hidden="true">MEC</span>
+                <span class="brand-year">2026</span>
+            </a>
+            <span class="header-caption">Urban food response system</span>
+        </header>
 
+        <main>
+            <section class="intro" aria-labelledby="page-title">
+                <p class="eyebrow">METROPOLITAN ENGINEERING COMPETITION</p>
+                <h1 id="page-title">Food support, coordinated.</h1>
+                <p class="intro-copy">Explore the service map, then submit a request for emergency food support.</p>
+            </section>
 
-<label class="clickableText" style="align-text: left;">
-    Sign in
-</label>
+            <section class="map-card" aria-labelledby="map-heading">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">SERVICE AREA</p>
+                        <h2 id="map-heading">{{ service_area_name }}</h2>
+                    </div>
+                    <span class="map-note">Map data is approximate</span>
+                </div>
+                <div id="map" aria-label="Map of the service area"></div>
+                <script id="map-config" type="application/json">{{ map_config|tojson }}</script>
+            </section>
 
-<h1 style="color:white">Hello</h1>
+            <section class="request-panel" aria-labelledby="request-heading">
+                <div class="request-copy">
+                    <p class="eyebrow">NEED FOOD SUPPORT?</p>
+                    <h2 id="request-heading">Send a delivery request</h2>
+                    <p>Share the destination and food requirements to begin coordinating a response.</p>
+                </div>
+                <button id="request" type="button" onclick="ShowForm()">
+                    Make a request <span aria-hidden="true">→</span>
+                </button>
+            </section>
 
+            <table id="requestsTable" style="margin-top:10px;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Destination</th>
+                        <th>Type</th>
+                        <th>People</th>
+                        <th>Address</th>
+                        <th>Cold Food Needed</th>
+                        <th>Hot Food Needed</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="requestsTableBody">
+                    <!-- API data goes here -->
+                </tbody>
+            </table>
+        </main>
+
+        <footer class="site-footer">
+            <span>MEC 2026 Programming</span>
+            <span>Feeding the Future</span>
+        </footer>
+    </div>
+
+    <div id="foodModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="form-title">
+        <section class="modal-content">
+            <button class="close-modal" id="closeFoodForm" type="button" onclick="hideForm()" aria-label="Close request form">&times;</button>
+            <p class="eyebrow">EMERGENCY FOOD SUPPORT</p>
+            <h2 id="form-title">Delivery request</h2>
+            <p class="modal-intro">Enter the destination and the supplies needed.</p>
+
+            <form id="foodRequestForm" onsubmit="submit_form(event)">
+                <h3>Destination</h3>
+                <label for="destination">Destination name <span aria-hidden="true">*</span></label>
+                <select id="destination" name="destination" required>
+                    <option value="">Choose a destination</option>
+                    <option value="community">Toronto General Hospital (approximate)</option>
+                    <option value="shelter">Moss Park delivery site (scenario)</option>
+                    <option value="community">Waterfront delivery site (scenario)</option>
+                    <option value="community">Bloor community delivery (scenario)</option>
+                </select>
+
+                <label for="type">Destination type <span aria-hidden="true">*</span></label>
+                <select id="type" name="type" required>
+                    <option value="">Choose a type</option>
+                    <option value="community">Community</option>
+                    <option value="shelter">Shelter</option>
+                    <option value="hospital">Hospital</option>
+                </select>
+
+                <div class="form-grid">
+                    <div>
+                        <label for="people">People affected</label>
+                        <input id="people" type="number" name="people" min="0" placeholder="e.g. 25">
+                    </div>
+                    <div>
+                        <label for="address">Address or location</label>
+                        <input id="address" type="text" name="address" placeholder="Street or intersection">
+                    </div>
+                </div>
+
+                <h3>Food requirements</h3>
+                <div class="food-grid">
+                    <fieldset class="food-section">
+                        <legend>Regular food</legend>
+                        <label for="hotNeeded">Amount needed</label>
+                        <input id="hotNeeded" type="number" name="hotNeeded" min="0" placeholder="0">
+                        <label for="hotRemaining">Amount available</label>
+                        <input id="hotRemaining" type="number" name="hotRemaining" min="0" placeholder="0">
+                    </fieldset>
+                    <fieldset class="food-section">
+                        <legend>Refrigerated food</legend>
+                        <label for="coldNeeded">Amount needed</label>
+                        <input id="coldNeeded" type="number" name="coldNeeded" min="0" placeholder="0">
+                        <label for="coldRemaining">Amount available</label>
+                        <input id="coldRemaining" type="number" name="coldRemaining" min="0" placeholder="0">
+                    </fieldset>
+                </div>
+
+                <h3>Urgency</h3>
+                <div class="form-grid">
+                    <div>
+                        <label for="hours">Delivery deadline (hours)</label>
+                        <input id="hours" type="number" name="hours" min="0" placeholder="Optional">
+                    </div>
+                    <div>
+                        <label for="urgency">Urgency level</label>
+                        <select id="urgency" name="urgency">
+                            <option value="">Unknown</option>
+                            <option value="critical">Critical</option>
+                            <option value="high">High</option>
+                            <option value="moderate">Moderate</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label for="notes">Additional information</label>
+                <textarea id="notes" name="notes" rows="3" placeholder="Anything else responders should know?"></textarea>
+
+                <button type="submit" class="submit-button">Submit request</button>
+            </form>
+        </section>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='mapScript.js') }}"></script>
 </body>
 </html>

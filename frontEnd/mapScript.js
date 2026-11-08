@@ -12,70 +12,37 @@ let highlightedRoads = [];
 
 async function highlightRoads(path) {
 
-    // Clear previous route
-    highlightedRoads.forEach(road => map.removeLayer(road));
-    highlightedRoads = [];
+    const coordinates = path.map(point => [
+        point.latitude,
+        point.longitude
+    ]);
 
-    if (!path || path.length < 2) {
-        console.error("Not enough nodes to calculate a route.");
-        return;
-    }
+    // Draw the route
+    const route = L.polyline(coordinates, {
+        color: "#007bff",
+        weight: 6,
+        opacity: 0.85
+    }).addTo(map);
 
-    // Get starting and ending coordinates
-    const start = path[0];
-    const end = path[path.length - 1];
+    // Highlight every stopping point in red
+    path.forEach((point, index) => {
 
-    // OSRM expects longitude,latitude
-    const coordinates =
-        `${start.longitude},${start.latitude};` +
-        `${end.longitude},${end.latitude}`;
+        L.circleMarker(
+            [point.latitude, point.longitude],
+            {
+                radius: 7,
+                color: "#990000",
+                fillColor: "#ff0000",
+                fillOpacity: 1,
+                weight: 2
+            }
+        )
+        .bindPopup(`Stopping Point ${index + 1}`)
+        .addTo(map);
 
-    const url =
-        `https://router.project-osrm.org/route/v1/driving/${coordinates}?overview=full&geometries=geojson`;
+    });
 
-    try {
-
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            throw new Error("OSRM request failed");
-        }
-
-        const data = await response.json();
-
-        if (data.code !== "Ok" || !data.routes.length) {
-            throw new Error("No route found");
-        }
-
-        // Extract road-following geometry
-        const routeCoordinates = data.routes[0].geometry.coordinates;
-
-        // Convert [longitude, latitude] to [latitude, longitude]
-        const latLngs = routeCoordinates.map(point => [
-            point[1],
-            point[0]
-        ]);
-
-        // Draw route
-        const route = L.polyline(latLngs, {
-            color: '#0066ff',
-            weight: 6,
-            opacity: 0.85
-        }).addTo(map);
-
-        highlightedRoads.push(route);
-
-        // Zoom to route
-        map.fitBounds(route.getBounds());
-
-        // Display distance
-        const distanceKm = data.routes[0].distance / 1000;
-
-        console.log("Route distance:", distanceKm.toFixed(2), "km");
-
-        return distanceKm;
-
-    } catch (error) {
-        console.error("Routing error:", error);
-    }
+    return route;
 }
+
+

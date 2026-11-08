@@ -68,3 +68,41 @@ async function submit_form(event) {
         console.log(e);
     }
 }
+
+
+async function loadRequests() {
+    try {
+        const response = await fetch("/api/request");
+
+        if (!response.ok) {
+            throw new Error("Failed to retrieve requests");
+        }
+
+        const data = await response.json();
+
+        const tableBody = document.getElementById("requestsTableBody");
+
+        tableBody.innerHTML = "";
+
+        data.forEach(request => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${request.id}</td>
+                <td>${request.dest_name}</td>
+                <td>${request.dest_type}</td>
+                <td>${request.num_people}</td>
+                <td>${request.address}</td>
+                <td>${request.hot_food_needed}</td>
+            `;
+
+            tableBody.appendChild(row);
+        });
+
+    } catch (error) {
+        console.error("Error loading requests:", error);
+    }
+}
+
+// Load table when page loads
+document.addEventListener("DOMContentLoaded", loadRequests);

@@ -368,3 +368,32 @@ textarea:focus-visible {
         gap: 0;
     }
 }
+
+
+
+#requestsTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    background: white;
+}
+
+#requestsTable th,
+#requestsTable td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+#requestsTable th {
+    background-color: rgb(23, 107, 89);
+    color: white;
+}
+
+#requestsTable tbody tr:hover {
+    background-color: rgb(219, 232, 209) !important;
+}
+
+#requestsTable tbody tr:nth-child(even) {
+    background-color: #f8f8f8;
+}
