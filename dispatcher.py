@@ -48,7 +48,6 @@ assignments = {}
 
 tie_breaker = count()
 
-
 def handle_requests():
     requests = get_all_requests()
 
