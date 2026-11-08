@@ -158,6 +158,7 @@ api.add_resource(Request, '/api/request/')
 api.add_resource(RequestByID, '/requests/<int:request_id>')
 api.add_resource(Routes, '/api/routes/')
 
+databaseInfo.set_model(app,db,RequestModel)
+
 if __name__ == '__main__':
-    databaseInfo.set_model(app,db,RequestModel)
     app.run(debug=True)
